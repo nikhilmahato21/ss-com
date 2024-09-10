@@ -1,3 +1,8 @@
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Socials from "./socials";
+import { BackButton } from "./back-button";
+
+
 type CardWrapperProps = {
   children: React.ReactNode;
   cardTitle: string;
@@ -13,5 +18,20 @@ export const AuthCard = ({
   backButtonLabel,
   showSocials,
 }: CardWrapperProps) => {
-  return <div>auth-card</div>;
+  return <Card>
+    <CardHeader>
+        <CardTitle>{cardTitle}</CardTitle>
+    </CardHeader>
+    <CardContent>
+        {children}
+    </CardContent>
+    {showSocials && (
+        <CardFooter>
+           <Socials/> 
+        </CardFooter>
+    )}
+    <CardFooter>
+        <BackButton href={backButtonHref}label={backButtonLabel}/>
+    </CardFooter>
+  </Card>;
 };
