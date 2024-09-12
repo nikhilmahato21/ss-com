@@ -52,10 +52,11 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
-model EmailTokens {
-  id      String
-  token   String
+model VerificationToken {
+  id      String  @id @default(cuid())
+  token   String   @unique
   expires DateTime
+  email   String
 
-  @@id([id, token])
+  @@unique([id, token])
 }

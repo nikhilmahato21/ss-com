@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 
 
 import { RegisterSchema } from "@/types/regisrer-schema";
+import { generateEmailVerificationToken } from "./tokens";
+import { sendVerificationEmail } from "./mail";
 
 
 export const register = async (values: z.infer<typeof RegisterSchema>)=>{
@@ -24,6 +26,11 @@ export const register = async (values: z.infer<typeof RegisterSchema>)=>{
      })  
 
      if(existingUser){
+
+        if(!existingUser.emailVerified){
+            const verificationToken = await generateEmailVerificationToken(email)
+            return {success:"Email Confirmation resent"}
+        }
         return{error:"Email already in use !"}
      }
      await db.user.create({
@@ -33,7 +40,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>)=>{
             password:hashedPassword
         },
      });
-     
 
-    return {success:'User Created !'}
+     const verificationToken = await generateEmailVerificationToken(email)
+     await sendVerificationEmail(verificationToken.email,verificationToken.token)
+
+    return {success:'Confirmation email sent!'}
 }
