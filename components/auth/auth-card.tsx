@@ -18,7 +18,7 @@ export const AuthCard = ({
   backButtonLabel,
   showSocials,
 }: CardWrapperProps) => {
-  return <Card>
+  return <Card className="lg:w-1/2 w-full lg:shadow-none lg:border-none" >
     <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
     </CardHeader>
