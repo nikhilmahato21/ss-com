@@ -48,13 +48,14 @@ export const RegisterForm = () => {
     });
   };
   return (
-    <div className="flex mb-10 ">
+    <div className="flex  mb-10 ">
       {" "}
       <AuthCard
         cardTitle="Create an account!"
         backButtonHref="/auth/login"
         backButtonLabel="Already have an account?"
         showSocials
+        additionalClass="lg:w-1/2 w-full lg:shadow-none lg:border-none"
       >
         <div>
           <Form {...form}>

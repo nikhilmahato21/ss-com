@@ -1,7 +1,12 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Socials from "./socials";
 import { BackButton } from "./back-button";
-
 
 type CardWrapperProps = {
   children: React.ReactNode;
@@ -9,6 +14,7 @@ type CardWrapperProps = {
   backButtonHref: string;
   backButtonLabel: string;
   showSocials?: boolean;
+  additionalClass?: string;
 };
 
 export const AuthCard = ({
@@ -17,21 +23,23 @@ export const AuthCard = ({
   backButtonHref,
   backButtonLabel,
   showSocials,
+  additionalClass = "",
+  
 }: CardWrapperProps) => {
-  return <Card className="lg:w-1/2 w-full lg:shadow-none lg:border-none" >
-    <CardHeader>
+  return (
+    <Card className={` ${additionalClass}`}>
+      <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
-    </CardHeader>
-    <CardContent>
-        {children}
-    </CardContent>
-    {showSocials && (
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+      {showSocials && (
         <CardFooter>
-           <Socials/> 
+          <Socials />
         </CardFooter>
-    )}
-    <CardFooter>
-        <BackButton href={backButtonHref}label={backButtonLabel}/>
-    </CardFooter>
-  </Card>;
+      )}
+      <CardFooter>
+        <BackButton href={backButtonHref} label={backButtonLabel} />
+      </CardFooter>
+    </Card>
+  );
 };

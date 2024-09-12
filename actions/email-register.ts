@@ -29,6 +29,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>)=>{
 
         if(!existingUser.emailVerified){
             const verificationToken = await generateEmailVerificationToken(email)
+            await sendVerificationEmail(verificationToken.email,verificationToken.token)
             return {success:"Email Confirmation resent"}
         }
         return{error:"Email already in use !"}

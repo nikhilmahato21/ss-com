@@ -20,10 +20,13 @@ import { RightImage } from "./right-image";
 import { useState, useTransition } from "react";
 import { emailSignIn } from "@/actions/email-signin";
 import { cn } from "@/lib/utils";
+import { FormSuccess } from "./form-success";
+import { FormError } from "./form-error";
 
 export const LoginForm = () => {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState();
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -32,7 +35,14 @@ export const LoginForm = () => {
     },
   });
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    emailSignIn(values);
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      emailSignIn(values).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
+    });
   };
   return (
     <div className="flex  mb-10">
@@ -42,6 +52,7 @@ export const LoginForm = () => {
         backButtonHref="/auth/register"
         backButtonLabel="Create a new account"
         showSocials
+        additionalClass="lg:w-1/2 w-full lg:shadow-none lg:border-none"
       >
         <div>
           <Form {...form}>
@@ -89,6 +100,8 @@ export const LoginForm = () => {
                   <Link href={"/auth/reset"}>Forgot Password?</Link>
                 </Button>
               </div>
+              <FormSuccess message={success} />
+              <FormError message={error} />
               <Button
                 type="submit"
                 className={cn("w-full my-2", isPending ? "animate-pulse" : "")}
