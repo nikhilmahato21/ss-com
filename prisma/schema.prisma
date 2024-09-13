@@ -60,3 +60,22 @@ model VerificationToken {
 
   @@unique([id, token])
 }
+
+model PasswordResetToken {
+  id      String  @id @default(cuid())
+  token   String   @unique
+  expires DateTime
+  email   String
+
+  @@unique([id, token])
+}
+
+model TwoFactorToken {
+  id      String  @id @default(cuid())
+  token   String   @unique
+  expires DateTime
+  email   String
+
+  @@unique([id, token])
+}
+

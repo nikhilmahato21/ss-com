@@ -92,3 +92,18 @@ await db.verificationToken.delete({
 })
  return {success :"Email verified!"}
 }
+
+
+export const getPasswordResetTokenByToken = async(token:string)=>{
+  try {
+    const passwordResetToken =  await db.passwordResetToken.findUnique({
+        where: {
+          token
+        },
+      });
+      return passwordResetToken
+  } catch (error) {
+    console.log(error);
+    return null
+  }   
+}
