@@ -22,24 +22,29 @@ import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
 import { NewPasswordSchema } from "@/types/new-password-schema";
 import { newPassword } from "@/actions/new-password";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export const NewPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const token = useSearchParams().get("token");
+  const router= useRouter()
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
       password: "",
     },
   });
+  
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      newPassword(values).then((data) => {
+      newPassword({password:values.password,token}).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
+        router.push('/auth/login')
       });
     });
   };
@@ -67,6 +72,7 @@ export const NewPasswordForm = () => {
                           {...field}
                           placeholder="******"
                           type="password"
+                          disabled={isPending}
                           autoComplete="current-password"
                         />
                       </FormControl>

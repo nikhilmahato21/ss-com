@@ -3,7 +3,7 @@ import Study from "@/public/Study2.jpg"
 
 export const RightImage = () => {
   return (
-    <div className="hidden relative lg:flex lg:w-1/2     border  shadow-sm overflow-hidden flex-col justify-center items-center rounded-2xl">
+    <div className="hidden relative lg:flex lg:w-1/2 h-3/4     border  shadow-sm overflow-hidden flex-col justify-center items-center rounded-2xl">
       <Image
         src={Study}
         alt="Study"
