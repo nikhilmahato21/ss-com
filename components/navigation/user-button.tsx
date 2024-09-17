@@ -13,8 +13,24 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { LogOut, Moon, Settings, Sun, Truck, TruckIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
+import { Switch } from "../ui/switch";
+import { set } from "zod";
 
 export const UserButton = ({ user }: Session) => {
+  const {setTheme,theme} = useTheme()
+  const[checked,setChecked] = useState(false)
+
+function setSwitchState(){
+   switch (theme){
+     case "dark":return setChecked(true)
+     case "light":return setChecked(false)
+     case "system":return setChecked(false)
+   }
+}
+
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
@@ -48,7 +64,7 @@ export const UserButton = ({ user }: Session) => {
           </span>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="py-2 group font-medium cursor-pointer transition-all duration-500  ">
+        <DropdownMenuItem className="py-2 group font-medium cursor-pointer transition-all duration-500 ease-in-out  ">
           {" "}
           <TruckIcon
             size={14}
@@ -57,7 +73,7 @@ export const UserButton = ({ user }: Session) => {
           My orders
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="py-2 group font-medium cursor-pointer transition-all duration-500 ">
+        <DropdownMenuItem className="py-2 group font-medium cursor-pointer transition-all duration-500 ease-in-out ">
           {" "}
           <Settings
             size={14}
@@ -65,13 +81,18 @@ export const UserButton = ({ user }: Session) => {
           />{" "}
           Settings
         </DropdownMenuItem>
-        <DropdownMenuItem className="py-2 font-medium cursor-pointer transition-all duration-500">
-          <div className="flex items-center">
-            <Sun size={14} />
-            <Moon size={14} />
-            <p>
-              Theme <span>theme</span>
+        <DropdownMenuItem className="py-2 font-medium cursor-pointer transition-all duration-500 ease-in-out">
+          <div onClick={(e)=>e.stopPropagation()} className="flex items-center group">
+            <Sun className="group-hover:text-yellow-600 dark:hidden group-hover:rotate-180 dark:-rotate-90 transition-all duration-500 ease-in-out mr-3 " size={14} />
+            <Moon className="group-hover:text-blue-400 mr-3 dark:block hidden group-hover:-rotate-12 transition-all duration-300 ease-in-out " size={14} />
+            <p className=" capitalize dark:text-blue-400 text-secondary-foreground/75  text-yellow-600">
+              {theme} mode
             </p>
+            <Switch className="scale-75 ml-3" checked={checked} onCheckedChange={(e)=>{
+              setChecked((prev)=>!prev)
+              if(e) setTheme("dark")
+                if(!e) setTheme("light")
+            }}/>
           </div>
         </DropdownMenuItem>
         <DropdownMenuItem

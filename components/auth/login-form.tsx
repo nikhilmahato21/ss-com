@@ -52,7 +52,7 @@ export const LoginForm = () => {
         backButtonHref="/auth/register"
         backButtonLabel="Create a new account"
         showSocials
-        additionalClass="lg:w-1/2 w-full lg:shadow-none lg:border-none"
+        additionalClass="lg:w-1/2 h-3/4  w-full lg:shadow-none lg:border-none"
       >
         <div>
           <Form {...form}>
