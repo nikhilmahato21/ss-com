@@ -18,7 +18,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { RightImage } from "./right-image";
 import { useState, useTransition } from "react";
-import { emailSignIn } from "@/actions/email-signin";
+
 import { cn } from "@/lib/utils";
 import { RegisterSchema } from "@/types/regisrer-schema";
 import { register } from "@/actions/email-register";
@@ -68,7 +68,12 @@ export const RegisterForm = () => {
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="nikhil" type="text" />
+                        <Input
+                          {...field}
+                          placeholder="nikhil"
+                          disabled={isPending}
+                          type="text"
+                        />
                       </FormControl>
                       <FormDescription />
                       <FormMessage />
@@ -87,6 +92,7 @@ export const RegisterForm = () => {
                           placeholder="nik@gmail.com"
                           type="email"
                           autoComplete="email"
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormDescription />
@@ -106,6 +112,7 @@ export const RegisterForm = () => {
                           placeholder="******"
                           type="password"
                           autoComplete="current-password"
+                          disabled={isPending}
                         />
                       </FormControl>
                       <FormDescription />

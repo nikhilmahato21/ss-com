@@ -16,11 +16,14 @@ import { LogOut, Moon, Settings, Sun, Truck, TruckIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Switch } from "../ui/switch";
-import { set } from "zod";
+import { useRouter } from "next/navigation";
+
+
 
 export const UserButton = ({ user }: Session) => {
   const {setTheme,theme} = useTheme()
   const[checked,setChecked] = useState(false)
+  const router = useRouter()
 
 function setSwitchState(){
    switch (theme){
@@ -73,7 +76,7 @@ function setSwitchState(){
           My orders
         </DropdownMenuItem>
 
-        <DropdownMenuItem className="py-2 group font-medium cursor-pointer transition-all duration-500 ease-in-out ">
+        <DropdownMenuItem onClick={()=>router.push('/dashboard/settings')} className="py-2 group font-medium cursor-pointer transition-all duration-500 ease-in-out ">
           {" "}
           <Settings
             size={14}
