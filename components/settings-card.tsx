@@ -37,6 +37,7 @@ export default function SettingsCard(session: SettingsForm) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [avatarUploading, setAvatarUploading] = useState();
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
@@ -47,7 +48,8 @@ export default function SettingsCard(session: SettingsForm) {
       // isTwoFactorEnabled:session.session.user?.isTwoFactorEnabled|| undefined,
     },
   });
-
+     console.log(session.session.user);
+     
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
     console.log("Form Submitted");
     console.log(values); // Log form values
@@ -171,7 +173,7 @@ export default function SettingsCard(session: SettingsForm) {
             />
             <FormError/>
             <FormSuccess/>
-            <Button disabled={isPending} type="submit">Update your settings</Button>
+            <Button disabled={isPending || avatarUploading} type="submit">Update your settings</Button>
           </form>
         </Form>
       </CardContent>
