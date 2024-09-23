@@ -28,6 +28,8 @@ import Image from "next/image";
 import { Switch } from "./ui/switch";
 import { FormError } from "./auth/form-error";
 import { FormSuccess } from "./auth/form-success";
+import { settings } from "@/actions/settings";
+import { cn } from "@/lib/utils";
 
 type SettingsForm = {
   session: Session;
@@ -41,18 +43,26 @@ export default function SettingsCard(session: SettingsForm) {
   const form = useForm<z.infer<typeof SettingsSchema>>({
     resolver: zodResolver(SettingsSchema),
     defaultValues: {
-      password: "",
-      newPassword: "",
+      password: undefined,
+      newPassword: undefined,
+      image: session.session.user?.image || undefined,
       name: session.session.user?.name || undefined,
       email: session.session.user?.email || undefined,
-      // isTwoFactorEnabled:session.session.user?.isTwoFactorEnabled|| undefined,
+      isTwoFactorEnabled: session.session.user?.isTwoFactorEnabled || undefined,
     },
   });
-     console.log(session.session.user);
-     
+  
+
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
-    console.log("Form Submitted");
-    console.log(values); // Log form values
+
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      settings(values).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
+    });
   };
 
   return (
@@ -98,7 +108,13 @@ export default function SettingsCard(session: SettingsForm) {
                       </div>
                     )}
                     {form.getValues("image") && (
-                      <Image className="rounded-full" src={form.getValues("image")!} width={42} height={42} alt="user image"/>
+                      <Image
+                        className="rounded-full"
+                        src={form.getValues("image")!}
+                        width={42}
+                        height={42}
+                        alt="user image"
+                      />
                     )}
                   </div>
                   <FormControl>
@@ -109,71 +125,81 @@ export default function SettingsCard(session: SettingsForm) {
                       disabled={isPending}
                     />
                   </FormControl>
-                 
+
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="*******"
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                 
-                 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="newPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>New Password</FormLabel>
-                 
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="nik"
-                      {...field}
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="isTwoFactorEnabled"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Two Factor Authentication</FormLabel>
-                  <FormDescription>
-                    Enable two factor Authentication for your account
-                  </FormDescription>
-                  <FormControl>
-                    <Switch disabled={isPending}/>
-                  </FormControl>
-                  
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormError/>
-            <FormSuccess/>
-            <Button disabled={isPending || avatarUploading} type="submit">Update your settings</Button>
+            {!session.session.user.isOAuth && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="*******"
+                          {...field}
+                          disabled={isPending}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="newPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>New Password</FormLabel>
+
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="nik"
+                          {...field}
+                          disabled={isPending}
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isTwoFactorEnabled"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Two Factor Authentication</FormLabel>
+                      <FormDescription>
+                        Enable two factor Authentication for your account
+                      </FormDescription>
+                      <FormControl>
+                        <Switch
+                          disabled={
+                            isPending 
+                          }
+                        />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            <FormError message={error} />
+            <FormSuccess message={success} />
+            <Button className={cn(" my-2", isPending ? "animate-pulse" : "")} disabled={isPending || avatarUploading} type="submit">
+              Update your settings
+            </Button>
           </form>
         </Form>
       </CardContent>

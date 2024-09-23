@@ -41,6 +41,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       });
       token.isOAuth = existingAccount;
       token.role = existingUser.role;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
       token.isTwoFactorEnabled = existingUser.twoFactorEnabled;
       token.image = existingUser.image;
       return token;
