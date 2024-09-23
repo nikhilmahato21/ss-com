@@ -22,11 +22,20 @@ import { emailSignIn } from "@/actions/email-signin";
 import { cn } from "@/lib/utils";
 import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error")==="account_linking_blocked"?"Please use your email and password to log in. This account can't be linked with another sign-in method.":""
+
+
+
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+
+
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -101,7 +110,7 @@ export const LoginForm = () => {
                 </Button>
               </div>
               <FormSuccess message={success} />
-              <FormError message={error} />
+              <FormError message={error || urlError} />
               <Button
                 type="submit"
                 className={cn("w-full my-2", isPending ? "animate-pulse" : "")}

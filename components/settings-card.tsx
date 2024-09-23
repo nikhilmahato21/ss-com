@@ -52,7 +52,9 @@ export default function SettingsCard(session: SettingsForm) {
     },
   });
   
-
+  // console.log(session.session.user);
+  
+     
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
 
     setError("");
@@ -161,7 +163,7 @@ export default function SettingsCard(session: SettingsForm) {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="nik"
+                          placeholder="********"
                           {...field}
                           disabled={isPending}
                         />

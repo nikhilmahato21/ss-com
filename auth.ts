@@ -9,7 +9,30 @@ import { LoginSchema } from "./types/login-schema";
 import { UserRole } from "@prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  pages:{
+   signIn:"/auth/login",
+   error:"/auth/error"
+  },
   callbacks: {
+    async signIn({ user, account }) {
+      // Check if the user signed up using credentials
+      const dbUser = await db.user.findUnique({
+        where: { email: user.email ?? undefined, },
+      });
+
+      const dbAccount = await db.account.findFirst({
+        where: {
+          userId: dbUser?.id,
+        },
+      });
+
+      // If the user signed up with credentials and is now trying to link OAuth, block it
+      if (dbUser?.password && account?.provider !== "credentials") {
+        return `/auth/login?error=account_linking_blocked`; 
+      }
+
+      return true; // Allow sign-in
+    },
     async session({ session, token }) {
       if (session && token.sub) {
         session.user.id = token.sub;
@@ -39,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           userId: existingUser.id,
         },
       });
-      token.isOAuth = existingAccount;
+      token.isOAuth = !!existingAccount && existingAccount.provider !== "credentials";
       token.role = existingUser.role;
       token.name = existingUser.name;
       token.email = existingUser.email;
@@ -47,7 +70,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.image = existingUser.image;
       return token;
     },
+    
   },
+  
 
   providers: [
     Google({
