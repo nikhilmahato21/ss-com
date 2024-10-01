@@ -1,7 +1,8 @@
+
 "use server"
 
 import { db } from "@/lib/db";
-
+import { randomInt } from 'crypto';
 export const getVerificationTokenByToken = async(token:string)=>{
     try {
       const verificationToken =  await db.verificationToken.findUnique({
@@ -151,6 +152,70 @@ return passwordResetToken;
 
   } catch (error) {
     return null
+  }
+
+}
+
+
+export const getTwoFactorTokenByEmail = async(email:string)=>{
+  try {
+    const twoFactorToken =  await db.twoFactorToken.findFirst({
+        where: {
+          email
+        },
+      });
+      return twoFactorToken
+  } catch (error) {
+    console.log(error);
+    return null
+  }   
+}
+
+export const getTwoFactorTokenByToken= async(token:string)=>{
+  try {
+    const twoFactorToken =  await db.twoFactorToken.findUnique({
+        where: {
+          token
+        },
+      });
+      return twoFactorToken
+  } catch (error) {
+    console.log(error);
+    return null
+  }   
+}
+
+export const generateTwoFactorToken = async(email:string)=>{
+  const token = randomInt(100000,1_000_000).toString();
+  const expires = new Date(new Date().getTime()+3600*1000)
+  const existingToken = await getTwoFactorTokenByEmail(email)
+  if (existingToken) {
+    await db.twoFactorToken.delete({
+      where: {
+        id: existingToken.id,
+      },
+    });
+  }
+  const twoFactorToken = await db.twoFactorToken.create({
+    data:{
+      email,
+      token,
+      expires
+    }
+  })
+  return twoFactorToken
+}
+
+export const getTwoFactorConfirmationByUserId = async(userId:string)=>{
+
+
+  try {
+    const twoFactorConfirmation = await db.twoFactorConfirmation.findUnique({
+      where:{userId}
+    })
+    return twoFactorConfirmation
+  } catch (error) {
+    return null;
   }
 
 }

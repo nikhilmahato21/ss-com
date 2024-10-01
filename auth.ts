@@ -1,3 +1,4 @@
+import { getTwoFactorConfirmationByUserId } from './actions/tokens';
 import NextAuth from "next-auth";
 import bcrypt from "bcryptjs";
 import Github from "next-auth/providers/github";
@@ -20,11 +21,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         where: { email: user.email ?? undefined, },
       });
 
-      const dbAccount = await db.account.findFirst({
-        where: {
-          userId: dbUser?.id,
-        },
-      });
+    if(dbUser?.isTwoFactorEnabled){
+      const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(dbUser.id)
+      if(!twoFactorConfirmation){
+        return false
+      }
+      
+    }
+      
 
       // If the user signed up with credentials and is now trying to link OAuth, block it
       if (dbUser?.password && account?.provider !== "credentials") {
@@ -66,7 +70,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       token.role = existingUser.role;
       token.name = existingUser.name;
       token.email = existingUser.email;
-      token.isTwoFactorEnabled = existingUser.twoFactorEnabled;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.image = existingUser.image;
       return token;
     },

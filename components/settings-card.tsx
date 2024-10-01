@@ -56,7 +56,8 @@ export default function SettingsCard(session: SettingsForm) {
   
      
   const onSubmit = (values: z.infer<typeof SettingsSchema>) => {
-
+    console.log(values);
+    
     setError("");
     setSuccess("");
     startTransition(() => {
@@ -187,6 +188,8 @@ export default function SettingsCard(session: SettingsForm) {
                           disabled={
                             isPending 
                           }
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
                         />
                       </FormControl>
 

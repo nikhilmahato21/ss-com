@@ -105,7 +105,7 @@ export const LoginForm = () => {
                     </FormItem>
                   )}
                 />
-                <Button size={"sm"} variant={"link"} asChild>
+                <Button size={"sm"} variant={"link"} className="px-0" asChild>
                   <Link href={"/auth/reset-password"}>Forgot Password?</Link>
                 </Button>
               </div>
